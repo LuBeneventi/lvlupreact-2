@@ -1,0 +1,42 @@
+[
+    {
+        "id": "u1",
+        "name": "Administrador Principal",
+        "email": "admin@levelup.com",
+        "password": "admin123",
+        "rut": "123456789",
+        "age": 35,
+        "role": "admin",
+        "token": "MOCK_ADMIN_TOKEN_123",
+        "hasDuocDiscount": true,
+        "points": 4558,
+        "referralCode": "ADMIN1000",
+        "isActive": true,
+        "address": {
+            "street": "Paicaví 3280",
+            "city": "Concepción",
+            "region": "Biobío",
+            "zipCode": "4030000"
+        }
+    },
+    {
+        "id": "e6da7c09-1193-4691-9fbc-22680195f7de",
+        "name": "Wacoldo",
+        "email": "asd@gmail.com",
+        "password": "123456",
+        "rut": "173211074",
+        "age": 35,
+        "role": "customer",
+        "token": "MOCK_CUSTOMER_TOKEN_6e3338dd",
+        "hasDuocDiscount": false,
+        "points": 14389,
+        "referralCode": "WAC8566",
+        "address": {
+            "street": "springfield 243",
+            "city": "Hualpén",
+            "region": "Biobío",
+            "zipCode": ""
+        },
+        "isActive": true
+    }
+]

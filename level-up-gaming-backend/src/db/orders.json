@@ -1,0 +1,170 @@
+[
+    {
+        "id": "5c9f7927-89e3-4786-9021-51f2c357be9f",
+        "userId": "u1",
+        "items": [
+            {
+                "product": {
+                    "id": "JM002",
+                    "name": "Carcassonne",
+                    "description": "Un juego de colocación de fichas donde los jugadores construyen el paisaje alrededor de la fortaleza medieval. Es ideal para 2-5 jugadores.",
+                    "price": 24990,
+                    "imageUrl": "/images/juego-carcassonne.png",
+                    "rating": 4.5,
+                    "numReviews": 89,
+                    "isTopSelling": false,
+                    "countInStock": 15,
+                    "category": "Juegos de Mesa",
+                    "specifications": "{\"Jugadores\": \"2-5\", \"Tiempo\": \"35 min\", \"Tipo\": \"Colocación de Fichas\"}",
+                    "reviews": []
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "Paicaví 3280",
+            "city": "Concepción",
+            "region": "Biobío",
+            "zipCode": "4030000",
+            "notes": ""
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 29992,
+        "shippingPrice": 10000,
+        "isPaid": true,
+        "status": "Entregado",
+        "createdAt": "2025-11-05T20:16:24.953Z"
+    },
+    {
+        "id": "ea59c166-57ce-47e3-b286-9531bcdff0d7",
+        "userId": "u1",
+        "items": [
+            {
+                "product": {
+                    "id": "reward-101",
+                    "name": "[CANJE] Taza Gamer Edición Limitada",
+                    "price": 0,
+                    "imageUrl": "/images/taza-gamer.png",
+                    "countInStock": 1,
+                    "rating": 0,
+                    "numReviews": 0,
+                    "isTopSelling": false,
+                    "description": "Canjea tus puntos por una taza exclusiva de Level-Up.",
+                    "category": "Recompensa",
+                    "reviews": [],
+                    "specifications": "{\"Origen\":\"Recompensa\"}"
+                },
+                "quantity": 1,
+                "isRedeemed": true,
+                "pointsCost": 2800
+            },
+            {
+                "product": {
+                    "id": "JM002",
+                    "name": "Carcassonne",
+                    "description": "Un juego de colocación de fichas donde los jugadores construyen el paisaje alrededor de la fortaleza medieval. Es ideal para 2-5 jugadores.",
+                    "price": 24990,
+                    "imageUrl": "/images/juego-carcassonne.png",
+                    "rating": 4.5,
+                    "numReviews": 89,
+                    "isTopSelling": false,
+                    "countInStock": 15,
+                    "category": "Juegos de Mesa",
+                    "specifications": "{\"Jugadores\": \"2-5\", \"Tiempo\": \"35 min\", \"Tipo\": \"Colocación de Fichas\"}",
+                    "reviews": []
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            },
+            {
+                "product": {
+                    "id": "AC001",
+                    "name": "Controlador Inalámbrico Xbox Series X",
+                    "description": "Ofrece una experiencia de juego cómoda con botones mapeables y una respuesta táctil mejorada.",
+                    "price": 59990,
+                    "imageUrl": "/images/controlador-xbox.png",
+                    "rating": 4.9,
+                    "numReviews": 215,
+                    "isTopSelling": true,
+                    "countInStock": 40,
+                    "category": "Accesorios",
+                    "specifications": "{\"Conectividad\": \"Inalámbrica/Bluetooth\", \"Batería\": \"AA/Recargable\"}",
+                    "reviews": [
+                        {
+                            "id": "r3-1",
+                            "name": "Pedro A.",
+                            "rating": 5,
+                            "comment": "Es el mejor control que he tenido.",
+                            "createdAt": "2024-11-25T00:00:00Z"
+                        }
+                    ]
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "Paicaví 3280",
+            "city": "Concepción",
+            "region": "Biobío",
+            "zipCode": "4030000",
+            "notes": ""
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 77984,
+        "shippingPrice": 10000,
+        "isPaid": true,
+        "status": "Pendiente",
+        "createdAt": "2025-11-07T03:48:21.420Z"
+    },
+    {
+        "id": "9dc60b6a-2a65-4e14-a78c-04aae07de08d",
+        "userId": "e6da7c09-1193-4691-9fbc-22680195f7de",
+        "items": [
+            {
+                "product": {
+                    "id": "CG001",
+                    "name": "PC Gamer ASUS ROG Strix",
+                    "description": "Un potente equipo diseñado para los gamers más exigentes, equipado con los últimos componentes.",
+                    "price": 1299990,
+                    "imageUrl": "/images/pc-gamer-asus.png",
+                    "rating": 5,
+                    "numReviews": 45,
+                    "isTopSelling": false,
+                    "countInStock": 3,
+                    "category": "Computadores",
+                    "specifications": "{\"Procesador\": \"Intel Core i9\", \"GPU\": \"RTX 4080\", \"RAM\": \"32GB\"}",
+                    "reviews": [
+                        {
+                            "id": "r6-1",
+                            "name": "Daniel P.",
+                            "rating": 5,
+                            "comment": "Una bestia. Corre todos mis juegos en ultra.",
+                            "createdAt": "2024-11-28T00:00:00Z"
+                        }
+                    ]
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "springfield 243",
+            "city": "Hualpén",
+            "region": "Biobío",
+            "zipCode": "",
+            "notes": "al lado del rio bio bio"
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 1299990,
+        "shippingPrice": 0,
+        "isPaid": true,
+        "status": "Pendiente",
+        "createdAt": "2025-11-07T11:51:57.118Z"
+    }
+]
