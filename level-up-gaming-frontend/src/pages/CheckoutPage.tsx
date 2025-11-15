@@ -68,8 +68,8 @@ const OrderSummary: React.FC<SummaryProps> = ({ subtotal, shippingPrice, discoun
             <h4 className="mb-3" style={{ color: '#39FF14' }}>Resumen de Compra</h4>
             <ListGroup variant="flush">
                 <ListGroup.Item className="d-flex justify-content-between" style={{ backgroundColor: 'transparent', borderBottomColor: '#333' }}>
-                    <span>Subtotal Artículos:</span>
-                    <span>{formatClp(subtotal)}</span>
+                    <span style={{ color: '#39FF14' }}>Subtotal Artículos:</span>
+                    <span style={{ color: '#858585ff' }}>{formatClp(subtotal)}</span>
                 </ListGroup.Item>
                 
                 {/* 1. Descuento DUOCUC (Si aplica) */}
@@ -105,8 +105,8 @@ const OrderSummary: React.FC<SummaryProps> = ({ subtotal, shippingPrice, discoun
                 )}
                 
                 <ListGroup.Item className="d-flex justify-content-between" style={{ backgroundColor: 'transparent', borderBottomColor: '#333' }}>
-                    <span>Envío Estimado:</span>
-                    <span style={{ color: shippingPrice === 0 ? 'yellow' : 'white' }}>
+                    <span style={{ color: '#39FF14' }}>Envío Estimado:</span>
+                    <span style={{ color: shippingPrice === 0 ? 'yellow' : 'grey' }}>
                         {shippingPrice === 0 ? 'GRATIS' : formatClp(shippingPrice)}
                     </span>
                 </ListGroup.Item>
@@ -302,19 +302,20 @@ const CheckoutPage: React.FC = () => {
             
             {/* 🚨 TOGGLE PARA ELEGIR DIRECCIÓN */}
             <Form.Group className="mb-3">
-                <Form.Check 
+                <Form.Check
                     type="switch"
                     id="address-switch"
                     label={user?.address?.street ? `Usar dirección registrada: (${shippingAddress.street}, ${shippingAddress.region})` : "Usar nueva dirección"}
                     checked={useRegisteredAddress}
                     onChange={(e) => setUseRegisteredAddress(e.target.checked)}
                     disabled={!user?.address?.street} // Deshabilitar si no hay dirección guardada
+                    style={{ color: '#1E90FF' }}
                 />
             </Form.Group>
             
             {/* 🚨 FORMULARIO DINÁMICO */}
             <Form onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
-                <Form.Group className="mb-3"><Form.Label>Calle y Número</Form.Label>
+                <Form.Group className="mb-3"><Form.Label style={{ color: '#868686ff' }}>Calle y Número</Form.Label>
                     <Form.Control 
                         type="text" 
                         value={shippingAddress.street} 
@@ -327,7 +328,7 @@ const CheckoutPage: React.FC = () => {
                 
                 <Row>
                     <Col md={6}>
-                        <Form.Group className="mb-3"><Form.Label>Región</Form.Label>
+                        <Form.Group className="mb-3"><Form.Label style={{ color: '#868686ff' }}>Región</Form.Label>
                             <Form.Select 
                                 value={shippingAddress.region} 
                                 // Al cambiar la Región, actualizamos la lista de comunas y reseteamos la ciudad
@@ -343,7 +344,7 @@ const CheckoutPage: React.FC = () => {
                         </Form.Group>
                     </Col>
                     <Col md={6}>
-                        <Form.Group className="mb-3"><Form.Label>Ciudad / Comuna</Form.Label>
+                        <Form.Group className="mb-3"><Form.Label style={{ color: '#868686ff' }}>Ciudad / Comuna</Form.Label>
                             <Form.Select
                                 value={shippingAddress.city} 
                                 onChange={(e) => setShippingAddress({...shippingAddress, city: e.target.value})} 
@@ -365,7 +366,7 @@ const CheckoutPage: React.FC = () => {
                 
                 {/* 🚨 CAMPO DE INDICACIONES */}
                 <Form.Group className="mb-3">
-                    <Form.Label>Indicaciones / Dirección difícil de encontrar (Opcional)</Form.Label>
+                    <Form.Label style={{ color: '#868686ff' }}>Indicaciones / Dirección difícil de encontrar (Opcional)</Form.Label>
                     <Form.Control 
                         as="textarea" 
                         rows={2}

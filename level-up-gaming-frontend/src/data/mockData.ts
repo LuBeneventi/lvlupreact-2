@@ -59,10 +59,10 @@ export interface VideoItem {
 
 // --- Mock Data de Comunidad ---
 export const mockLevels: Level[] = [
-  { id: 1, name: 'Bronze', minPoints: 0, benefits: [''] },
-  { id: 2, name: 'Silver', minPoints: 5000, benefits: ['Descuento del 5%'] },
-  { id: 3, name: 'Gold', minPoints: 20000, benefits: ['Descuento del 10% en pedidos.', 'Soporte prioritario.'] },
-  { id: 4, name: 'V.I.P.', minPoints: 50000, benefits: ['Descuento del 15% en pedidos.', 'Regalo de cumpleaños.', 'Acceso a eventos VIP.'] },
+  { id: 1, name: 'Bronce', minPoints: 0, benefits: [''] },
+  { id: 2, name: 'Plata', minPoints: 5000, benefits: ['Descuento del 5%'] },
+  { id: 3, name: 'Oro', minPoints: 20000, benefits: ['Descuento del 10% en pedidos.', 'Soporte prioritario.'] },
+  { id: 4, name: 'Diamante', minPoints: 50000, benefits: ['Descuento del 15% en pedidos.', 'Regalo de cumpleaños.', 'Acceso a eventos VIP.'] },
 ];
 
 export const mockEvents: Event[] = [

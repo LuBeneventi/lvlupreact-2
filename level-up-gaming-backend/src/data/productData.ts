@@ -22,6 +22,7 @@ export interface Product {
     specifications: string; // Datos técnicos (JSON string)
     category: string; 
     reviews: Review[];
+    isActive: boolean;
 }
 
 export const products: Product[] = [
@@ -37,6 +38,7 @@ export const products: Product[] = [
       countInStock: 20,
       category: 'Juegos de Mesa',
       specifications: '{"Jugadores": "3-4", "Tiempo": "60-90 min", "Estrategia": "Alta"}',
+      isActive: true,
       reviews: [
           { id: 'r1-1', name: "Carlos M.", rating: 5, comment: "Excelente juego, muy entretenido para jugar en familia.", createdAt: "2024-11-15T00:00:00Z" },
           { id: 'r1-2', name: "María P.", rating: 5, comment: "Mi juego favorito! Siempre es diferente cada partida.", createdAt: "2024-11-10T00:00:00Z" },
@@ -54,6 +56,7 @@ export const products: Product[] = [
       countInStock: 15,
       category: 'Juegos de Mesa',
       specifications: '{"Jugadores": "2-5", "Tiempo": "35 min", "Tipo": "Colocación de Fichas"}',
+      isActive: true,
       reviews: [],
     },
     {
@@ -68,6 +71,7 @@ export const products: Product[] = [
       countInStock: 40,
       category: 'Accesorios',
       specifications: '{"Conectividad": "Inalámbrica/Bluetooth", "Batería": "AA/Recargable"}',
+      isActive: true,
       reviews: [
           { id: 'r3-1', name: "Pedro A.", rating: 5, comment: "Es el mejor control que he tenido.", createdAt: "2024-11-25T00:00:00Z" },
       ],
@@ -84,6 +88,7 @@ export const products: Product[] = [
       countInStock: 30,
       category: 'Accesorios',
       specifications: '{"Sonido": "7.1 Surround", "Micrófono": "Desmontable"}',
+      isActive: true,
       reviews: [
           { id: 'r4-1', name: "Felipe T.", rating: 5, comment: "El sonido 7.1 es increíble.", createdAt: "2024-11-24T00:00:00Z" },
       ],
@@ -100,6 +105,7 @@ export const products: Product[] = [
       countInStock: 5,
       category: 'Consolas',
       specifications: '{"CPU": "8x Zen 2 Cores", "GPU": "10.28 TFLOPS", "SSD": "825GB Custom"}',
+      isActive: true,
       reviews: [
           { id: 'r5-1', name: "Isabel B.", rating: 5, comment: "Una consola increíble. Los gráficos son de otro nivel.", createdAt: "2024-11-26T00:00:00Z" },
       ],
@@ -116,6 +122,7 @@ export const products: Product[] = [
       countInStock: 3,
       category: 'Computadores',
       specifications: '{"Procesador": "Intel Core i9", "GPU": "RTX 4080", "RAM": "32GB"}',
+      isActive: true,
       reviews: [
           { id: 'r6-1', name: "Daniel P.", rating: 5, comment: "Una bestia. Corre todos mis juegos en ultra.", createdAt: "2024-11-28T00:00:00Z" },
       ],
@@ -132,6 +139,7 @@ export const products: Product[] = [
       countInStock: 12,
       category: 'Accesorios',
       specifications: '{"Soporte": "Lumbar incorporado", "Material": "Cuero sintético"}',
+      isActive: true,
       reviews: [
           { id: 'r7-1', name: "José M.", rating: 5, comment: "Es increíblemente cómoda.", createdAt: "2024-11-23T00:00:00Z" },
       ],
@@ -148,6 +156,7 @@ export const products: Product[] = [
       countInStock: 60,
       category: 'Accesorios',
       specifications: '{"Sensor": "HERO 25K", "DPI": "25600", "Peso": "Ajustable"}',
+      isActive: true,
       reviews: [
           { id: 'r8-1', name: "Gabriel N.", rating: 5, comment: "El mejor mouse para gaming.", createdAt: "2024-11-27T00:00:00Z" },
       ],

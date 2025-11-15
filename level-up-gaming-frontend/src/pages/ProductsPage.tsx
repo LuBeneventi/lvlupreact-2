@@ -1,7 +1,7 @@
 // level-up-gaming-frontend/src/pages/ProductsPage.tsx
 
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Spinner, Alert, Button } from 'react-bootstrap';
+import { Container, Row, Col, Spinner, Alert, Button, Form } from 'react-bootstrap';
 import ProductCard from '../components/ProductCard';
 import { Product } from '../types/Product';
 
@@ -11,75 +11,80 @@ const CATEGORIES = ['Consolas', 'Juegos', 'Accesorios', 'Laptops', 'Computadores
 
 
 const ProductsPage: React.FC = () => {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [allProducts, setAllProducts] = useState<Product[]>([]); // 🚨 NUEVO: Almacena todos los productos
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    // 🚨 Estado para el filtro seleccionado
-    const [selectedCategory, setSelectedCategory] = useState<string>(''); 
+    const [selectedCategory, setSelectedCategory] = useState<string>('');
+    const [searchTerm, setSearchTerm] = useState(''); // 🚨 NUEVO: Estado para el buscador
 
-    // 🚨 FUNCIÓN DE FETCH: Ahora depende del 'categoryFilter' pasado como argumento
-    const fetchProducts = async (categoryFilter: string) => {
+    // 🚨 CAMBIO: Se obtienen todos los productos una sola vez
+    useEffect(() => {
+        const fetchAllProducts = async () => {
         setLoading(true);
         setError(null);
-        
-        // Construir URL: si hay filtro, añade ?category=X
-        const url = categoryFilter 
-            ? `${API_URL}?category=${categoryFilter}` 
-            : API_URL;
-
         try {
-            const response = await fetch(url);
+                const response = await fetch(API_URL);
             
             if (!response.ok) {
                 throw new Error('No se pudieron cargar los productos del servidor.');
             }
 
             const data: Product[] = await response.json();
-            setProducts(data);
+            const activeProducts = data.filter(product => product.isActive);
+                setAllProducts(activeProducts);
         } catch (err: any) {
             setError(err.message);
         } finally {
             setLoading(false);
         }
-    };
+        };
 
-    useEffect(() => {
-        // 🚨 Carga inicial: El useEffect llama a fetchProducts con el estado actual
-        fetchProducts(selectedCategory); 
-    }, [selectedCategory]); // 🚨 CLAVE: El hook se ejecuta CADA VEZ que selectedCategory cambia
-    
-    
-    // Handler para los botones de filtro
+        fetchAllProducts();
+    }, []);
+
+    // 🚨 NUEVO: Lógica para filtrar productos en el cliente
+    const filteredProducts = React.useMemo(() => {
+        return allProducts.filter(product => {
+            const matchesCategory = selectedCategory ? product.category === selectedCategory : true;
+            const matchesSearch = searchTerm ? product.name.toLowerCase().includes(searchTerm.toLowerCase()) : true;
+            return matchesCategory && matchesSearch;
+        });
+    }, [allProducts, selectedCategory, searchTerm]);
+
     const handleCategoryFilter = (category: string) => {
-        // 🚨 CAMBIO CLAVE: SÓLO actualizamos el estado. El useEffect hará el fetch.
-        setSelectedCategory(category); 
+        setSelectedCategory(category);
     };
-
 
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
         <Container className="py-5">
+            <style>{`.product-search-input::placeholder { color: #999; opacity: 1; }`}</style>
             <h1 style={{ color: 'var(--color-azul-electrico)' }}>Catálogo de Productos</h1>
             
-            {/* SECCIÓN DE FILTROS */}
+            {/* 🚨 NUEVO: Buscador en su propia fila */}
+            <Row className="mb-4 justify-content-center">
+                <Col md={6}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="product-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+            </Row>
+
+            {/* SECCIÓN DE FILTROS DE CATEGORÍA */}
             <Row className="mb-4">
-                <Col>
-                    <Button 
-                        variant={selectedCategory === '' ? 'primary' : 'outline-secondary'} 
-                        onClick={() => handleCategoryFilter('')} 
-                        className="me-2 mb-2"
-                    >
+                <Col className="text-center">
+                    <Button variant={selectedCategory === '' ? 'primary' : 'outline-secondary'} onClick={() => handleCategoryFilter('')} className="me-2 mb-2">
                         Todos
                     </Button>
                     {CATEGORIES.map(cat => (
-                        <Button 
-                            key={cat}
-                            variant={selectedCategory === cat ? 'primary' : 'outline-secondary'} 
-                            onClick={() => handleCategoryFilter(cat)} // Llama al handler para cambiar el estado
-                            className="me-2 mb-2"
-                        >
+                        <Button key={cat} variant={selectedCategory === cat ? 'primary' : 'outline-secondary'} onClick={() => handleCategoryFilter(cat)} className="me-2 mb-2">
                             {cat}
                         </Button>
                     ))}
@@ -88,11 +93,11 @@ const ProductsPage: React.FC = () => {
 
 
             {/* LISTADO DE PRODUCTOS */}
-            {products.length === 0 ? (
-                <Alert variant="info">No hay productos disponibles en esta categoría.</Alert>
+            {filteredProducts.length === 0 ? (
+                <Alert variant="info">No se encontraron productos con los filtros aplicados.</Alert>
             ) : (
                 <Row xs={1} md={2} lg={3} xl={4} className="g-4 mt-3">
-                    {products.map((product) => (
+                    {filteredProducts.map((product) => (
                         <Col key={product.id}>
                             <ProductCard product={product} />
                         </Col>

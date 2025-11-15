@@ -1,7 +1,7 @@
 // level-up-gaming-frontend/src/pages/AdminUsersPage.tsx
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card } from 'react-bootstrap';
+import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card, ButtonGroup } from 'react-bootstrap';
 import { Edit, ArrowLeft, PlusCircle, AlertTriangle, UserX } from 'react-feather';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -57,6 +57,10 @@ const AdminUsersPage: React.FC = () => {
     const [showDeactivationModal, setShowDeactivationModal] = useState(false);
     const [userToToggle, setUserToToggle] = useState<AuthUser & { isActive?: boolean } | null>(null);
 
+    // 🚨 NUEVO: Estados para búsqueda y filtros
+    const [searchTerm, setSearchTerm] = useState('');
+    const [roleFilter, setRoleFilter] = useState<'admin' | 'customer' | 'seller' | ''>('');
+
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -110,12 +114,39 @@ const AdminUsersPage: React.FC = () => {
         }
     };
 
+    // 🚨 NUEVO: Lógica para filtrar usuarios
+    const filteredUsers = React.useMemo(() => {
+        let filtered = [...users];
+
+        // 1. Filtrar por RUT (searchTerm)
+        if (searchTerm) {
+            filtered = filtered.filter(user =>
+                user.rut.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Filtrar por rol
+        if (roleFilter) {
+            filtered = filtered.filter(user => user.role === roleFilter);
+        }
+
+        return filtered;
+    }, [users, searchTerm, roleFilter]);
+
 
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
         <AdminLayout>
+            {/* Estilo para el placeholder del buscador */}
+            <style>{`
+                .admin-search-input::placeholder {
+                    color: #999;
+                    opacity: 1;
+                }
+            `}</style>
+
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
                 <Link to="/admin">
                     <Button variant="outline-secondary" size="sm">
@@ -127,6 +158,34 @@ const AdminUsersPage: React.FC = () => {
                     <PlusCircle size={18} className="me-2" /> Nuevo Usuario
                 </Button>
             </div>
+
+            {/* 🚨 NUEVO: Fila de filtros */}
+            <Row className="mb-4 align-items-center">
+                <Col md={4}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por RUT..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={8} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Filtrar por Rol:</span>
+                    <ButtonGroup>
+                        <Button variant={roleFilter === 'admin' ? 'danger' : 'outline-danger'} onClick={() => setRoleFilter(roleFilter === 'admin' ? '' : 'admin')}>
+                            Admin
+                        </Button>
+                        <Button variant={roleFilter === 'seller' ? 'warning' : 'outline-warning'} onClick={() => setRoleFilter(roleFilter === 'seller' ? '' : 'seller')}>
+                            Vendedor
+                        </Button>
+                        <Button variant={roleFilter === 'customer' ? 'primary' : 'outline-primary'} onClick={() => setRoleFilter(roleFilter === 'customer' ? '' : 'customer')}>
+                            Cliente
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
 
             {statusMessage && (
                 <Alert variant={statusMessage.type} onClose={() => setStatusMessage(null)} dismissible className="mb-4">
@@ -150,7 +209,7 @@ const AdminUsersPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.map((user) => (
+                        {filteredUsers.map((user) => (
                             <tr key={user.id} className={!user.isActive ? 'text-muted' : ''}>
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
@@ -174,7 +233,7 @@ const AdminUsersPage: React.FC = () => {
 
             {/* VISTA 2: TARJETAS APILADAS (Móvil) */}
             <Row className="d-block d-md-none g-3">
-                {users.map((user) => (
+                {filteredUsers.map((user) => (
                     <Col xs={12} key={user.id}>
                         <Card style={{ backgroundColor: '#222', border: `1px solid ${user.isActive ? '#1E90FF' : '#555'}`, color: 'white' }}>
                             <Card.Body>

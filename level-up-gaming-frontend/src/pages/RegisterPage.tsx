@@ -132,19 +132,19 @@ const RegisterPage: React.FC = () => {
                             {/* 1. DATOS PERSONALES (RESPONSIVO) */}
                             <h5 className="mb-3" style={{ color: '#1E90FF' }}>Información de Usuario</h5>
                             <Row>
-                                <Col md={6} xs={12}><Form.Group className="mb-3" controlId="name"><Form.Label>Nombre Completo</Form.Label>
+                                <Col md={6} xs={12}><Form.Group className="mb-3" controlId="name"><Form.Label style={{ color: '#1E90FF' }}>Nombre Completo</Form.Label>
                                     <Form.Control type="text" placeholder="Ingresa tu nombre" value={name} onChange={(e) => setName(e.target.value)} required style={{ backgroundColor: '#222', color: 'white' }}/></Form.Group></Col>
-                                <Col md={6} xs={12}><Form.Group className="mb-3" controlId="email"><Form.Label>Correo Electrónico</Form.Label>
+                                <Col md={6} xs={12}><Form.Group className="mb-3" controlId="email"><Form.Label style={{ color: '#1E90FF' }}>Correo Electrónico</Form.Label>
                                     <Form.Control type="email" placeholder="Incluye @duocuc.cl para 20% OFF de por vida" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ backgroundColor: '#222', color: 'white' }}/></Form.Group></Col>
                             </Row>
                             
                             <Row>
                                 <Col md={6} xs={12}> {/* RUT */}
-                                    <Form.Group className="mb-3" controlId="rut"><Form.Label>RUT</Form.Label>
+                                    <Form.Group className="mb-3" controlId="rut"><Form.Label style={{ color: '#1E90FF' }}>RUT</Form.Label>
                                         <Form.Control type="text" placeholder="Sin puntos ni guión (Ej: 12345678K)" value={rut} onChange={(e) => setRut(e.target.value)} required isInvalid={rut.length > 0 && !validateRut(rut)} style={{ backgroundColor: '#222', color: 'white' }}/></Form.Group>
                                 </Col>
                                 <Col md={3} xs={6}> {/* Edad */}
-                                    <Form.Group className="mb-3" controlId="age"><Form.Label>Edad</Form.Label>
+                                    <Form.Group className="mb-3" controlId="age"><Form.Label style={{ color: '#1E90FF' }}>Edad</Form.Label>
                                         <Form.Control 
                                             type="number" value={age} onChange={(e) => setAge(e.target.value)} 
                                             required min={18} max={95} 
@@ -156,7 +156,7 @@ const RegisterPage: React.FC = () => {
                                 </Col>
                                 <Col md={3} xs={6}> {/* Código de Referido */}
                                     <Form.Group className="mb-3" controlId="referral">
-                                        <Form.Label>Código Referido</Form.Label>
+                                        <Form.Label style={{ color: '#1E90FF' }}>Código Referido</Form.Label>
                                         <Form.Control type="text" placeholder="Código amigo" value={referralCodeInput} onChange={(e) => setReferralCodeInput(e.target.value)} style={{ backgroundColor: '#222', color: 'white' }}/>
                                     </Form.Group>
                                 </Col>
@@ -165,14 +165,14 @@ const RegisterPage: React.FC = () => {
                             {/* 2. DIRECCIÓN DE ENVÍO (RESPONSIVO CON SELECTS) */}
                             <h5 className="mb-3 mt-4 border-top pt-3" style={{ color: '#1E90FF' }}>Dirección de Envío</h5>
                             <Form.Group className="mb-3" controlId="street">
-                                <Form.Label>Calle y Número</Form.Label>
+                                <Form.Label style={{ color: '#1E90FF' }}>Calle y Número</Form.Label>
                                 <Form.Control type="text" placeholder="Ej: Av. Paicaví 3280" value={street} onChange={(e) => setStreet(e.target.value)} required style={{ backgroundColor: '#222', color: 'white' }}/>
                             </Form.Group>
                             
                             <Row>
                                 <Col md={6} xs={12}>
                                     <Form.Group className="mb-3" controlId="region">
-                                        <Form.Label>Región</Form.Label>
+                                        <Form.Label style={{ color: '#1E90FF' }}>Región</Form.Label>
                                         <Form.Select 
                                             value={region} 
                                             onChange={(e) => setRegion(e.target.value)} 
@@ -187,7 +187,7 @@ const RegisterPage: React.FC = () => {
                                 </Col>
                                 <Col md={6} xs={12}>
                                     <Form.Group className="mb-3" controlId="city">
-                                        <Form.Label>Ciudad / Comuna</Form.Label>
+                                        <Form.Label style={{ color: '#1E90FF' }}>Ciudad / Comuna</Form.Label>
                                         <Form.Select 
                                             value={city} 
                                             onChange={(e) => setCity(e.target.value)} 
@@ -210,14 +210,14 @@ const RegisterPage: React.FC = () => {
                             <h5 className="mb-3 mt-4 border-top pt-3" style={{ color: '#1E90FF' }}>Contraseña</h5>
                             <Row>
                                 <Col md={6} xs={12}>
-                                    <Form.Group className="mb-3" controlId="password">
-                                        <Form.Label>Contraseña</Form.Label>
+                                    <Form.Group className="mb-3" controlId="password" >
+                                        <Form.Label style={{ color: '#1E90FF' }}>Contraseña</Form.Label>
                                         <Form.Control type="password" placeholder="Mínimo 6 caracteres" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ backgroundColor: '#222', color: 'white' }} isInvalid={password !== confirmPassword && confirmPassword.length > 0}/>
                                     </Form.Group>
                                 </Col>
                                 <Col md={6} xs={12}>
-                                    <Form.Group className="mb-4" controlId="confirmPassword">
-                                        <Form.Label>Confirmar Contraseña</Form.Label>
+                                    <Form.Group className="mb-4" controlId="confirmPassword" >
+                                        <Form.Label style={{ color: '#1E90FF' }}>Confirmar Contraseña</Form.Label>
                                         <Form.Control type="password" placeholder="Confirma tu contraseña" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required style={{ backgroundColor: '#222', color: 'white' }} isInvalid={password !== confirmPassword}/>
                                         <Form.Control.Feedback type="invalid">Las contraseñas no coinciden.</Form.Control.Feedback>
                                     </Form.Group>

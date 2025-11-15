@@ -11,6 +11,7 @@
         "countInStock": 20,
         "category": "Juegos de Mesa",
         "specifications": "{\"Jugadores\": \"3-4\", \"Tiempo\": \"60-90 min\", \"Estrategia\": \"Alta\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r1-1",
@@ -40,6 +41,7 @@
         "countInStock": 15,
         "category": "Juegos de Mesa",
         "specifications": "{\"Jugadores\": \"2-5\", \"Tiempo\": \"35 min\", \"Tipo\": \"Colocación de Fichas\"}",
+        "isActive": true,
         "reviews": []
     },
     {
@@ -54,6 +56,7 @@
         "countInStock": 40,
         "category": "Accesorios",
         "specifications": "{\"Conectividad\": \"Inalámbrica/Bluetooth\", \"Batería\": \"AA/Recargable\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r3-1",
@@ -76,6 +79,7 @@
         "countInStock": 30,
         "category": "Accesorios",
         "specifications": "{\"Sonido\": \"7.1 Surround\", \"Micrófono\": \"Desmontable\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r4-1",
@@ -98,6 +102,7 @@
         "countInStock": 5,
         "category": "Consolas",
         "specifications": "{\"CPU\": \"8x Zen 2 Cores\", \"GPU\": \"10.28 TFLOPS\", \"SSD\": \"825GB Custom\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r5-1",
@@ -120,6 +125,7 @@
         "countInStock": 6,
         "category": "Computadores",
         "specifications": "{\"Procesador\": \"Intel Core i9\", \"GPU\": \"RTX 4080\", \"RAM\": \"32GB\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r6-1",
@@ -142,6 +148,7 @@
         "countInStock": 12,
         "category": "Accesorios",
         "specifications": "{\"Soporte\": \"Lumbar incorporado\", \"Material\": \"Cuero sintético\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r7-1",
@@ -164,6 +171,7 @@
         "countInStock": 60,
         "category": "Accesorios",
         "specifications": "{\"Sensor\": \"HERO 25K\", \"DPI\": \"25600\", \"Peso\": \"Ajustable\"}",
+        "isActive": true,
         "reviews": [
             {
                 "id": "r8-1",

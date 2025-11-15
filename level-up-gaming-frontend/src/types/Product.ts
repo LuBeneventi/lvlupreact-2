@@ -25,4 +25,5 @@ export interface Product {
     specifications: string; // Datos técnicos (JSON string)
     category: string; 
     reviews: Review[]; // Lista de comentarios para la página de detalle
+    isActive: true
 }

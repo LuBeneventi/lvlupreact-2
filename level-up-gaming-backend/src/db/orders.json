@@ -166,5 +166,158 @@
         "isPaid": true,
         "status": "Pendiente",
         "createdAt": "2025-11-07T11:51:57.118Z"
+    },
+    {
+        "id": "418dd614-b286-40cc-a1b5-7a0c5b929f0c",
+        "userId": "cf742f28-d669-4fcf-b51f-4cabf3fac394",
+        "items": [
+            {
+                "product": {
+                    "id": "AC001",
+                    "name": "Controlador Inalámbrico Xbox Series X",
+                    "description": "Ofrece una experiencia de juego cómoda con botones mapeables y una respuesta táctil mejorada.",
+                    "price": 59990,
+                    "imageUrl": "/images/controlador-xbox.png",
+                    "rating": 4.9,
+                    "numReviews": 215,
+                    "isTopSelling": true,
+                    "countInStock": 40,
+                    "category": "Accesorios",
+                    "specifications": "{\"Conectividad\": \"Inalámbrica/Bluetooth\", \"Batería\": \"AA/Recargable\"}",
+                    "reviews": [
+                        {
+                            "id": "r3-1",
+                            "name": "Pedro A.",
+                            "rating": 5,
+                            "comment": "Es el mejor control que he tenido.",
+                            "createdAt": "2024-11-25T00:00:00Z"
+                        }
+                    ],
+                    "isActive": true
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "Los Nardos 5150",
+            "city": "Talcahuano",
+            "region": "Biobío",
+            "zipCode": "",
+            "notes": ""
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 69990,
+        "shippingPrice": 10000,
+        "isPaid": true,
+        "status": "Pendiente",
+        "createdAt": "2025-11-15T18:57:23.774Z"
+    },
+    {
+        "id": "3db22c33-d286-4aac-8af6-55d355b62d27",
+        "userId": "21f4852c-8b7c-4556-b2d2-8c954e940398",
+        "items": [
+            {
+                "product": {
+                    "id": "AC002",
+                    "name": "Auriculares Gamer HyperX Cloud II",
+                    "description": "Proporcionan un sonido envolvente de calidad con un micrófono desmontable y almohadillas de espuma viscoelástica.",
+                    "price": 79990,
+                    "imageUrl": "/images/auriculares-hyperx.png",
+                    "rating": 4.7,
+                    "numReviews": 190,
+                    "isTopSelling": true,
+                    "countInStock": 30,
+                    "category": "Accesorios",
+                    "specifications": "{\"Sonido\": \"7.1 Surround\", \"Micrófono\": \"Desmontable\"}",
+                    "reviews": [
+                        {
+                            "id": "r4-1",
+                            "name": "Felipe T.",
+                            "rating": 5,
+                            "comment": "El sonido 7.1 es increíble.",
+                            "createdAt": "2024-11-24T00:00:00Z"
+                        }
+                    ],
+                    "isActive": true
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            },
+            {
+                "product": {
+                    "id": "JM002",
+                    "name": "Carcassonne",
+                    "description": "Un juego de colocación de fichas donde los jugadores construyen el paisaje alrededor de la fortaleza medieval. Es ideal para 2-5 jugadores.",
+                    "price": 24990,
+                    "imageUrl": "/images/juego-carcassonne.png",
+                    "rating": 4.5,
+                    "numReviews": 89,
+                    "isTopSelling": false,
+                    "countInStock": 15,
+                    "category": "Juegos de Mesa",
+                    "specifications": "{\"Jugadores\": \"2-5\", \"Tiempo\": \"35 min\", \"Tipo\": \"Colocación de Fichas\"}",
+                    "reviews": [],
+                    "isActive": true
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "Los Nardos 5150",
+            "city": "Cochrane",
+            "region": "Aysén del General Carlos Ibáñez del Campo",
+            "zipCode": "",
+            "notes": ""
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 83984,
+        "shippingPrice": 0,
+        "isPaid": true,
+        "status": "Pendiente",
+        "createdAt": "2025-11-15T20:10:24.107Z"
+    },
+    {
+        "id": "e2835160-fe94-417b-a044-2754d5819d19",
+        "userId": "u1",
+        "items": [
+            {
+                "product": {
+                    "id": "JM002",
+                    "name": "Carcassonne",
+                    "description": "Un juego de colocación de fichas donde los jugadores construyen el paisaje alrededor de la fortaleza medieval. Es ideal para 2-5 jugadores.",
+                    "price": 24990,
+                    "imageUrl": "/images/juego-carcassonne.png",
+                    "rating": 4.5,
+                    "numReviews": 89,
+                    "isTopSelling": false,
+                    "countInStock": 15,
+                    "category": "Juegos de Mesa",
+                    "specifications": "{\"Jugadores\": \"2-5\", \"Tiempo\": \"35 min\", \"Tipo\": \"Colocación de Fichas\"}",
+                    "reviews": [],
+                    "isActive": true
+                },
+                "quantity": 1,
+                "isRedeemed": false,
+                "pointsCost": 0
+            }
+        ],
+        "shippingAddress": {
+            "street": "Paicaví 3280",
+            "city": "Concepción",
+            "region": "Biobío",
+            "zipCode": "4030000",
+            "notes": ""
+        },
+        "paymentMethod": "webpay",
+        "totalPrice": 29992,
+        "shippingPrice": 10000,
+        "isPaid": true,
+        "status": "Procesando",
+        "createdAt": "2025-11-15T20:27:08.161Z"
     }
 ]

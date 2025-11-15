@@ -9,7 +9,7 @@
         "role": "admin",
         "token": "MOCK_ADMIN_TOKEN_123",
         "hasDuocDiscount": true,
-        "points": 4558,
+        "points": 5873,
         "referralCode": "ADMIN1000",
         "isActive": true,
         "address": {
@@ -35,6 +35,66 @@
             "street": "springfield 243",
             "city": "Hualpén",
             "region": "Biobío",
+            "zipCode": ""
+        },
+        "isActive": true
+    },
+    {
+        "id": "cf742f28-d669-4fcf-b51f-4cabf3fac394",
+        "name": "Luciano Beneventi",
+        "email": "sssgx18@gmail.com",
+        "password": "Geminis_10",
+        "rut": "207797804",
+        "age": 24,
+        "role": "customer",
+        "token": "MOCK_CUSTOMER_TOKEN_bbc88b6f",
+        "hasDuocDiscount": false,
+        "points": 7072,
+        "referralCode": "LUC7735",
+        "address": {
+            "street": "Los Nardos 5150",
+            "city": "Talcahuano",
+            "region": "Biobío",
+            "zipCode": ""
+        },
+        "isActive": true
+    },
+    {
+        "id": "f91bf432-892c-4a97-b70c-a55081987195",
+        "name": "Luciano Beneventi",
+        "email": "lucriox14@gmail.com",
+        "password": "Geminis_10",
+        "rut": "207797804",
+        "age": 23,
+        "role": "customer",
+        "token": "MOCK_CUSTOMER_TOKEN_8527996e",
+        "hasDuocDiscount": false,
+        "points": 100,
+        "referralCode": "LUC7553",
+        "address": {
+            "street": "Los Nardos 5150",
+            "city": "Treguaco",
+            "region": "Ñuble",
+            "zipCode": ""
+        },
+        "isActive": true
+    },
+    {
+        "id": "21f4852c-8b7c-4556-b2d2-8c954e940398",
+        "name": "W",
+        "email": "we@duocuc.cl",
+        "password": "Geminis_10",
+        "rut": "168735995",
+        "age": 23,
+        "role": "customer",
+        "token": "MOCK_CUSTOMER_TOKEN_07674d92",
+        "hasDuocDiscount": true,
+        "points": 1013,
+        "referralCode": "W1562",
+        "address": {
+            "street": "Los Nardos 5150",
+            "city": "Cochrane",
+            "region": "Aysén del General Carlos Ibáñez del Campo",
             "zipCode": ""
         },
         "isActive": true

@@ -12,7 +12,8 @@ import {
     Row,
     Col,
     Form,
-    Card
+    Card,
+    ButtonGroup
 } from 'react-bootstrap';
     import { Edit, Trash, ArrowLeft, PlusCircle, AlertTriangle } from 'react-feather';
 import { Link } from 'react-router-dom';
@@ -42,6 +43,10 @@ const AdminBlogPage: React.FC = () => {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{ id: string; name: string } | null>(null);
+
+    // 🚨 NUEVO: Estados para búsqueda y ordenamiento
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | ''>('newest');
 
     const fetchPosts = async () => {
         setLoading(true);
@@ -90,6 +95,31 @@ const AdminBlogPage: React.FC = () => {
         setSelectedPost(post);
     };
 
+    // 🚨 NUEVO: Lógica para filtrar y ordenar los posts
+    const filteredAndSortedPosts = React.useMemo(() => {
+        let filtered = [...posts];
+
+        // 1. Filtrar por título
+        if (searchTerm) {
+            filtered = filtered.filter(post =>
+                post.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Ordenar por fecha
+        if (sortOrder) {
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.createdAt).getTime();
+                const dateB = new Date(b.createdAt).getTime();
+                if (sortOrder === 'newest') {
+                    return dateB - dateA;
+                }
+                return dateA - dateB; // 'oldest'
+            });
+        }
+        return filtered;
+    }, [posts, searchTerm, sortOrder]);
+
     if (loading)
         return (
             <Container className="py-5 text-center">
@@ -106,6 +136,13 @@ const AdminBlogPage: React.FC = () => {
 
     return (
         <AdminLayout>
+            {/* Estilo para el placeholder del buscador */}
+            <style>{`
+                .admin-search-input::placeholder {
+                    color: #999;
+                    opacity: 1;
+                }
+            `}</style>
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
 
                 <Link to="/admin">
@@ -120,6 +157,31 @@ const AdminBlogPage: React.FC = () => {
                     <PlusCircle size={18} className="me-2" /> Nuevo Artículo
                 </Button>
             </div>
+
+            {/* 🚨 NUEVO: Fila de filtros */}
+            <Row className="mb-4 align-items-center">
+                <Col md={5}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por título..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={7} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Ordenar por Fecha:</span>
+                    <ButtonGroup>
+                        <Button variant={sortOrder === 'newest' ? 'primary' : 'outline-secondary'} onClick={() => setSortOrder(sortOrder === 'newest' ? '' : 'newest')}>
+                            Más Recientes
+                        </Button>
+                        <Button variant={sortOrder === 'oldest' ? 'primary' : 'outline-secondary'} onClick={() => setSortOrder(sortOrder === 'oldest' ? '' : 'oldest')}>
+                            Más Antiguos
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
 
             {statusMessage && (
                 <Alert
@@ -151,7 +213,7 @@ const AdminBlogPage: React.FC = () => {
                     </thead>
 
                     <tbody>
-                        {posts.map(post => (
+                        {filteredAndSortedPosts.map(post => (
                             <tr key={post.id}>
                                 <td style={{ color: "white" }}>{post.title}</td>
                                 <td>{post.author}</td>
@@ -183,7 +245,7 @@ const AdminBlogPage: React.FC = () => {
 
             {/* ✅ Vista Móvil */}
             <Row className="d-block d-md-none g-3">
-                {posts.map(post => (
+                {filteredAndSortedPosts.map(post => (
                     <Col xs={12} key={post.id}>
                         <Card style={{ backgroundColor: "#222", border: "1px solid #1E90FF", color: "white" }}>
                             <Card.Body>

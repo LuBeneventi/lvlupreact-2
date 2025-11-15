@@ -1,7 +1,7 @@
 // level-up-gaming-frontend/src/pages/AdminVideosPage.tsx
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card } from 'react-bootstrap';
+import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card, ButtonGroup } from 'react-bootstrap';
 import { Edit, Trash, ArrowLeft, PlusCircle, Video, Star, AlertTriangle, Check, X } from 'react-feather'; 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -31,6 +31,10 @@ const AdminVideosPage: React.FC = () => {
     // ESTADOS PARA EL MODAL DE ELIMINACIÓN
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{ id: string, name: string } | null>(null);
+
+    // 🚨 NUEVO: Estados para búsqueda y filtros
+    const [searchTerm, setSearchTerm] = useState('');
+    const [featuredFilter, setFeaturedFilter] = useState<'featured' | 'not_featured' | ''>('');
 
 
     const fetchVideos = async () => {
@@ -98,12 +102,41 @@ const AdminVideosPage: React.FC = () => {
         }
     };
 
+    // 🚨 NUEVO: Lógica para filtrar videos
+    const filteredVideos = React.useMemo(() => {
+        let filtered = [...videos];
+
+        // 1. Filtrar por título
+        if (searchTerm) {
+            filtered = filtered.filter(video =>
+                video.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Filtrar por estado de destacado
+        if (featuredFilter === 'featured') {
+            filtered = filtered.filter(video => video.isFeatured);
+        } else if (featuredFilter === 'not_featured') {
+            filtered = filtered.filter(video => !video.isFeatured);
+        }
+
+        return filtered;
+    }, [videos, searchTerm, featuredFilter]);
+
 
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
     
     return (
         <AdminLayout>
+            {/* Estilo para el placeholder del buscador */}
+            <style>{`
+                .admin-search-input::placeholder {
+                    color: #999;
+                    opacity: 1;
+                }
+            `}</style>
+
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
                 {/* Se quita el botón "Volver al Panel" */}
                 <div style={{ visibility: 'hidden', width: '150px' }}></div> 
@@ -115,6 +148,31 @@ const AdminVideosPage: React.FC = () => {
                 </Button>
             </div>
             
+            {/* 🚨 NUEVO: Fila de filtros */}
+            <Row className="mb-4 align-items-center">
+                <Col md={5}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por título de video..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={7} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Filtrar por:</span>
+                    <ButtonGroup>
+                        <Button variant={featuredFilter === 'featured' ? 'success' : 'outline-success'} onClick={() => setFeaturedFilter(featuredFilter === 'featured' ? '' : 'featured')}>
+                            Destacados
+                        </Button>
+                        <Button variant={featuredFilter === 'not_featured' ? 'secondary' : 'outline-secondary'} onClick={() => setFeaturedFilter(featuredFilter === 'not_featured' ? '' : 'not_featured')}>
+                            No Destacados
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
+
             {statusMessage && (
                 <Alert variant={statusMessage.type} onClose={() => setStatusMessage(null)} dismissible className="mb-4">
                     {statusMessage.msg}
@@ -133,7 +191,7 @@ const AdminVideosPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {videos.map((video) => (
+                        {filteredVideos.map((video) => (
                             <tr key={video.id}>
                                 <td style={{ color: 'white' }}>{video.title}</td>
                                 <td><a href={video.embedUrl} target="_blank" rel="noopener noreferrer">Ver Video</a></td>
@@ -154,7 +212,7 @@ const AdminVideosPage: React.FC = () => {
 
             {/* 🚨 VISTA 2: TARJETAS APILADAS (Móvil) */}
             <Row className="d-block d-md-none g-3">
-                {videos.map((video) => (
+                {filteredVideos.map((video) => (
                     <Col xs={12} key={video.id}>
                         <Card style={{ backgroundColor: '#222', border: '1px solid #1E90FF', color: 'white' }}>
                             <Card.Body>

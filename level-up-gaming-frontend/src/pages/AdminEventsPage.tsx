@@ -1,7 +1,7 @@
 // level-up-gaming-frontend/src/pages/AdminEventsPage.tsx
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card } from 'react-bootstrap';
+import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card, ButtonGroup } from 'react-bootstrap';
 import { Edit, Trash, ArrowLeft, PlusCircle, Calendar, MapPin, AlertTriangle, Eye, Hash } from 'react-feather'; 
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -40,6 +40,10 @@ const AdminEventsPage: React.FC = () => {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [eventToDelete, setEventToDelete] = useState<{ id: string, title: string } | null>(null);
     const [showDetailsModal, setShowDetailsModal] = useState(false);
+
+    // 🚨 NUEVO: Estados para búsqueda y ordenamiento
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortOrder, setSortOrder] = useState<'newest' | 'oldest' | ''>('newest');
 
 
     const fetchEvents = async () => {
@@ -94,13 +98,46 @@ const AdminEventsPage: React.FC = () => {
         setShowDetailsModal(true);
     };
 
+    // 🚨 NUEVO: Lógica para filtrar y ordenar eventos
+    const filteredAndSortedEvents = React.useMemo(() => {
+        let filtered = [...events];
+
+        // 1. Filtrar por título
+        if (searchTerm) {
+            filtered = filtered.filter(event =>
+                event.title.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Ordenar por fecha
+        if (sortOrder) {
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.date).getTime();
+                const dateB = new Date(b.date).getTime();
+                if (sortOrder === 'newest') {
+                    return dateB - dateA;
+                } else { // 'oldest'
+                    return dateA - dateB;
+                }
+            });
+        }
+
+        return filtered;
+    }, [events, searchTerm, sortOrder]);
+
 
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
     
     return (
         <AdminLayout>
-            <div className="flex-grow-1 p-4">
+            <style>{`.admin-search-input::placeholder { color: #999; opacity: 1; }`}</style>
+            <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
+                <Link to="/admin">
+                    <Button variant="outline-secondary" size="sm">
+                        <ArrowLeft size={16} className="me-2" /> Volver al Panel
+                    </Button>
+                </Link>
                 <div style={{ visibility: 'hidden', width: '150px' }}></div> 
                 <h1 style={{ color: '#1E90FF' }}>Gestión de Eventos</h1>
                 <Button variant="success" onClick={() => setShowCreateModal(true)}>
@@ -108,6 +145,31 @@ const AdminEventsPage: React.FC = () => {
                 </Button>
             </div>
             
+            {/* 🚨 NUEVO: Fila de filtros */}
+            <Row className="mb-4 align-items-center">
+                <Col md={5}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre de evento..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={7} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Ordenar por Fecha:</span>
+                    <ButtonGroup>
+                        <Button variant={sortOrder === 'newest' ? 'primary' : 'outline-secondary'} onClick={() => setSortOrder(sortOrder === 'newest' ? '' : 'newest')}>
+                            Más Recientes
+                        </Button>
+                        <Button variant={sortOrder === 'oldest' ? 'primary' : 'outline-secondary'} onClick={() => setSortOrder(sortOrder === 'oldest' ? '' : 'oldest')}>
+                            Más Antiguos
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
+
             {statusMessage && (
                 <Alert variant={statusMessage.type} onClose={() => setStatusMessage(null)} dismissible className="mb-4">
                     {statusMessage.msg}
@@ -126,7 +188,7 @@ const AdminEventsPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {events.map((event) => (
+                        {filteredAndSortedEvents.map((event) => (
                             <tr key={event.id}>
                                 <td style={{ color: 'white' }}>{event.title}</td>
                                 <td>{new Date(event.date).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' })} a las {event.time} hrs</td>
@@ -144,7 +206,7 @@ const AdminEventsPage: React.FC = () => {
 
             {/* 🚨 VISTA 2: TARJETAS APILADAS (Móvil) */}
             <Row className="d-block d-md-none g-3">
-                {events.map((event) => (
+                {filteredAndSortedEvents.map((event) => (
                     <Col xs={12} key={event.id}>
                         <Card style={{ backgroundColor: '#222', border: '1px solid #1E90FF', color: 'white' }}>
                             <Card.Body>

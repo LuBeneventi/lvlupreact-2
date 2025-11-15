@@ -1,7 +1,8 @@
 // level-up-gaming-frontend/src/pages/AdminRewardsPage.tsx (CÓDIGO COMPLETO)
+// level-up-gaming-frontend/src/pages/AdminRewardsPage.tsx (CÓDIGO COMPLETO)
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card } from 'react-bootstrap';
+import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card, ButtonGroup } from 'react-bootstrap';
 import { Edit, Trash, ArrowLeft, PlusCircle, Check, X, AlertTriangle } from 'react-feather';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -34,6 +35,10 @@ const AdminRewardsPage: React.FC = () => {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [itemToDelete, setItemToDelete] = useState<{ id: string, name: string } | null>(null);
+
+    // 🚨 NUEVO: Estados para búsqueda y ordenamiento
+    const [searchTerm, setSearchTerm] = useState('');
+    const [pointsSortOrder, setPointsSortOrder] = useState<'asc' | 'desc' | ''>('');
 
     const fetchRewards = async () => {
         setLoading(true);
@@ -93,11 +98,43 @@ const AdminRewardsPage: React.FC = () => {
         }
     };
 
+    // 🚨 NUEVO: Lógica para filtrar y ordenar recompensas
+    const filteredAndSortedRewards = React.useMemo(() => {
+        let filtered = [...rewards];
+
+        // 1. Filtrar por nombre
+        if (searchTerm) {
+            filtered = filtered.filter(reward =>
+                reward.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Ordenar por costo de puntos
+        if (pointsSortOrder) {
+            filtered.sort((a, b) => {
+                if (pointsSortOrder === 'asc') {
+                    return a.pointsCost - b.pointsCost;
+                } else { // 'desc'
+                    return b.pointsCost - a.pointsCost;
+                }
+            });
+        }
+
+        return filtered;
+    }, [rewards, searchTerm, pointsSortOrder]);
+
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
         <AdminLayout>
+            {/* Estilo para el placeholder del buscador */}
+            <style>{`
+                .admin-search-input::placeholder {
+                    color: #999;
+                    opacity: 1;
+                }
+            `}</style>
 
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
                 <Link to="/admin">
@@ -110,6 +147,31 @@ const AdminRewardsPage: React.FC = () => {
                     <PlusCircle size={18} className="me-2" /> Nueva Recompensa
                 </Button>
             </div>
+
+            {/* 🚨 NUEVO: Fila de filtros */}
+            <Row className="mb-4 align-items-center">
+                <Col md={5}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre de recompensa..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={7} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Ordenar por Costo:</span>
+                    <ButtonGroup>
+                        <Button variant={pointsSortOrder === 'asc' ? 'primary' : 'outline-secondary'} onClick={() => setPointsSortOrder(pointsSortOrder === 'asc' ? '' : 'asc')}>
+                            Ascendente
+                        </Button>
+                        <Button variant={pointsSortOrder === 'desc' ? 'primary' : 'outline-secondary'} onClick={() => setPointsSortOrder(pointsSortOrder === 'desc' ? '' : 'desc')}>
+                            Descendente
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
 
             {statusMessage && (
                 <Alert variant={statusMessage.type} onClose={() => setStatusMessage(null)} dismissible className="mb-4">
@@ -131,7 +193,7 @@ const AdminRewardsPage: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {rewards.map((reward) => (
+                        {filteredAndSortedRewards.map((reward) => (
                             <tr key={reward.id}>
                                 <td>{reward.name}</td>
                                 <td>{reward.pointsCost}</td>
@@ -154,7 +216,7 @@ const AdminRewardsPage: React.FC = () => {
 
             {/* MÓVIL */}
             <Row className="d-block d-md-none g-3">
-                {rewards.map((reward) => (
+                {filteredAndSortedRewards.map((reward) => (
                     <Col xs={12} key={reward.id}>
                         <Card style={{ backgroundColor: '#222', border: '1px solid #1E90FF', color: 'white' }}>
                             <Card.Body>

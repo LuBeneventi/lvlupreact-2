@@ -1,8 +1,8 @@
 // level-up-gaming-frontend/src/pages/AdminProductsPage.tsx (CÓDIGO FINAL CORREGIDO)
 
 import React, { useState, useEffect, FormEvent } from 'react';
-import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card } from 'react-bootstrap';
-import { Edit, Trash, ArrowLeft, PlusCircle, AlertTriangle } from 'react-feather';
+import { Container, Table, Alert, Spinner, Badge, Button, Modal, Row, Col, Form, Card, ButtonGroup } from 'react-bootstrap';
+import { Edit, ArrowLeft, PlusCircle, AlertTriangle, ToggleLeft, ToggleRight } from 'react-feather';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Product } from '../types/Product';
@@ -30,14 +30,21 @@ const AdminProductsPage: React.FC = () => {
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ msg: string, type: 'success' | 'danger' } | null>(null);
 
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [itemToDelete, setItemToDelete] = useState<{ id: string, name: string } | null>(null);
+    // 🚨 NUEVO: Estados para el modal de confirmación de activar/desactivar
+    const [showToggleActiveModal, setShowToggleActiveModal] = useState(false);
+    const [itemToToggle, setItemToToggle] = useState<{ id: string, name: string, isActive: boolean } | null>(null);
 
+    // 🚨 NUEVO: Estados para búsqueda y ordenamiento
+    const [searchTerm, setSearchTerm] = useState('');
+    const [stockSortOrder, setStockSortOrder] = useState<'asc' | 'desc' | ''>('');
+    
+    // 🚨 ELIMINADO: Ya no necesitamos estados para el modal de borrado.
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const { data } = await axios.get(`${API_URL}?_=${new Date().getTime()}`);
-            setProducts(data);
+            // 🚨 CORRECCIÓN: Llamamos a la ruta principal pero con un parámetro para incluir inactivos.
+            const { data } = await axios.get(`${API_URL}?includeInactive=true&_=${new Date().getTime()}`);
+            setProducts(data.reverse());
             setError(null);
         } catch (err) {
             setError('No se pudo cargar la lista. Asegúrate de que el Backend esté corriendo.');
@@ -55,35 +62,73 @@ const AdminProductsPage: React.FC = () => {
         setTimeout(() => setStatusMessage(null), 5000);
     };
 
-    const confirmDelete = (id: string, name: string) => {
-        setItemToDelete({ id, name });
-        setShowDeleteModal(true);
+    // 🚨 ELIMINADO: La función handleDelete y confirmDelete ya no son necesarias.
+    // La lógica ahora está centralizada en handleToggleActive.
+
+    // 🚨 CAMBIO: Esta función ahora abre el modal de confirmación
+    const confirmToggleActive = (id: string, currentStatus: boolean, name: string) => {
+        setItemToToggle({ id, name, isActive: currentStatus });
+        setShowToggleActiveModal(true);
     };
 
-    const handleDelete = async () => {
-        if (!itemToDelete) return;
-        
+    // 🚨 NUEVO: Esta función ejecuta la acción después de la confirmación
+    const executeToggleActive = async () => {
+        if (!itemToToggle) return;
+
+        const newStatus = !itemToToggle.isActive;
         try {
-            await axios.delete(`${API_URL}/${itemToDelete.id}`);
-            fetchProducts(); // Refetch products after deletion
-            showStatus(`Producto "${itemToDelete.name}" eliminado con éxito.`, 'success');
+            // 🚨 CORRECCIÓN: Usamos el endpoint PUT /:id que ya existe para activar/desactivar.
+            const { data } = await axios.put<Product>(`${API_URL}/${itemToToggle.id}`, { isActive: newStatus });
+
+            setProducts(prevProducts => prevProducts.map(p => p.id === itemToToggle.id ? data : p));
+            showStatus(`Producto "${itemToToggle.name}" cambiado a: ${newStatus ? 'ACTIVO' : 'INACTIVO'}.`, 'success');
+
         } catch (err) {
-            showStatus('Fallo al eliminar el producto.', 'danger');
+            showStatus('Fallo al cambiar el estado del producto.', 'danger');
         } finally {
-            setShowDeleteModal(false);
-            setItemToDelete(null);
+            setShowToggleActiveModal(false);
+            setItemToToggle(null);
         }
     };
+
+    // 🚨 NUEVO: Lógica para filtrar y ordenar productos
+    const filteredAndSortedProducts = React.useMemo(() => {
+        let filtered = [...products];
+
+        // 1. Filtrar por término de búsqueda (nombre)
+        if (searchTerm) {
+            filtered = filtered.filter(product =>
+                product.name.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        // 2. Ordenar por stock
+        if (stockSortOrder) {
+            filtered.sort((a, b) => {
+                if (stockSortOrder === 'asc') {
+                    return a.countInStock - b.countInStock;
+                } else { // 'desc'
+                    return b.countInStock - a.countInStock;
+                }
+            });
+        }
+
+        return filtered;
+    }, [products, searchTerm, stockSortOrder]);
 
     if (loading) return <Container className="py-5 text-center"><Spinner animation="border" /></Container>;
     if (error) return <Container className="py-5"><Alert variant="danger">{error}</Alert></Container>;
 
     return (
         <AdminLayout>
+            <style>{`.admin-search-input::placeholder { color: #999; opacity: 1; }`}</style>
 
             <div className="d-flex justify-content-between align-items-center mb-4 border-bottom pb-2">
-                {/* 🚨 CAMBIO 4: Eliminamos el botón "Volver al Panel" */}
-                <div style={{ visibility: 'hidden', width: '150px' }}></div> 
+                <Link to="/admin">
+                    <Button variant="outline-secondary" size="sm">
+                        <ArrowLeft size={16} className="me-2" /> Volver al Panel
+                    </Button>
+                </Link>
                 
                 <h1 style={{ color: '#1E90FF' }}>Gestión de Productos</h1>
 
@@ -91,6 +136,31 @@ const AdminProductsPage: React.FC = () => {
                     <PlusCircle size={18} className="me-2" /> Nuevo Producto
                 </Button>
             </div>
+
+            {/* 🚨 NUEVO: Fila de filtros (Buscador y Ordenamiento) */}
+            <Row className="mb-4 align-items-center">
+                <Col md={5}>
+                    <Form.Control
+                        type="text"
+                        placeholder="Buscar por nombre de producto..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="admin-search-input"
+                        style={{ backgroundColor: '#333', color: 'white', borderColor: '#555' }}
+                    />
+                </Col>
+                <Col md={7} className="text-md-end mt-2 mt-md-0">
+                    <span className="me-3 text-muted">Ordenar por Stock:</span>
+                    <ButtonGroup>
+                        <Button variant={stockSortOrder === 'asc' ? 'primary' : 'outline-secondary'} onClick={() => setStockSortOrder(stockSortOrder === 'asc' ? '' : 'asc')}>
+                            Ascendente
+                        </Button>
+                        <Button variant={stockSortOrder === 'desc' ? 'primary' : 'outline-secondary'} onClick={() => setStockSortOrder(stockSortOrder === 'desc' ? '' : 'desc')}>
+                            Descendente
+                        </Button>
+                    </ButtonGroup>
+                </Col>
+            </Row>
 
             {statusMessage && (
                 <Alert variant={statusMessage.type} onClose={() => setStatusMessage(null)} dismissible className="mb-4">
@@ -107,23 +177,30 @@ const AdminProductsPage: React.FC = () => {
                             <th>Precio</th>
                             <th>Stock</th>
                             <th>Categoría</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {products.map(product => (
-                            <tr key={product.id}>
+                        {filteredAndSortedProducts.map(product => (
+                            <tr key={product.id} className={!product.isActive ? 'text-muted' : ''} style={{ opacity: product.isActive ? 1 : 0.6 }}>
                                 <td>{product.name}</td>
                                 <td>{formatClp(product.price)}</td>
-                                <td>{product.countInStock}</td>
+                                <td><Badge bg={product.countInStock > 5 ? 'success' : product.countInStock > 0 ? 'warning' : 'danger'}>{product.countInStock}</Badge></td>
                                 <td><Badge bg="info">{product.category}</Badge></td>
+                                {/* 🚨 CAMBIO: Ahora solo muestra un Badge de estado */}
+                                <td><Badge bg={product.isActive ? 'success' : 'secondary'}>{product.isActive ? 'Activo' : 'Inactivo'}</Badge></td>
                                 <td>
                                     <Button variant="info" size="sm" className="me-2" onClick={() => setSelectedProduct(product)}>
                                         <Edit size={14} />
                                     </Button>
-                                    <Button variant="danger" size="sm" onClick={() => confirmDelete(product.id, product.name)}>
-                                        <Trash size={14} />
+                                    {/* 🚨 CAMBIO: El botón de basura se reemplaza por un toggle de activar/desactivar */}
+                                    <Button 
+                                        variant={product.isActive ? 'warning' : 'success'} 
+                                        size="sm" onClick={() => confirmToggleActive(product.id, product.isActive, product.name)} 
+                                        title={product.isActive ? 'Desactivar' : 'Activar'}>
+                                        {product.isActive ? <ToggleLeft size={14} /> : <ToggleRight size={14} />}
                                     </Button>
                                 </td>
                             </tr>
@@ -134,9 +211,9 @@ const AdminProductsPage: React.FC = () => {
 
             {/* VISTA TARJETAS MÓVIL (d-block d-md-none) */}
             <Row className="d-block d-md-none g-3">
-                {products.map(product => (
+                {filteredAndSortedProducts.map(product => (
                     <Col xs={12} key={product.id}>
-                        <Card style={{ backgroundColor: '#222', border: '1px solid #1E90FF', color: 'white' }}>
+                        <Card style={{ backgroundColor: '#222', border: `1px solid ${product.isActive ? '#1E90FF' : '#555'}`, color: 'white', opacity: product.isActive ? 1 : 0.7 }}>
                             <Card.Body>
                                 <div className="d-flex justify-content-between align-items-center">
                                     <h5 className="mb-0" style={{ color: '#39FF14' }}>{product.name}</h5>
@@ -147,14 +224,15 @@ const AdminProductsPage: React.FC = () => {
 
                                 <p className="mb-1">Precio: <strong>{formatClp(product.price)} CLP</strong></p>
                                 <p className="mb-3">Stock: <Badge bg={product.countInStock > 5 ? 'success' : 'warning'}>{product.countInStock}</Badge></p>
+                                <p className="mb-3">Estado: <Badge bg={product.isActive ? 'success' : 'secondary'}>{product.isActive ? 'Activo' : 'Inactivo'}</Badge></p>
 
                                 <div className="d-grid gap-2">
                                     <Button variant="info" size="sm" onClick={() => setSelectedProduct(product)}>
                                         <Edit size={14} className="me-1"/> Editar
                                     </Button>
-
-                                    <Button variant="danger" size="sm" onClick={() => confirmDelete(product.id, product.name)}>
-                                        <Trash size={14} className="me-1"/> Eliminar
+                                    {/* 🚨 CAMBIO: El botón ahora es un toggle claro */}
+                                    <Button variant={product.isActive ? 'warning' : 'success'} size="sm" onClick={() => confirmToggleActive(product.id, product.isActive, product.name)}>
+                                        {product.isActive ? 'Desactivar' : 'Activar'}
                                     </Button>
                                 </div>
                             </Card.Body>
@@ -172,46 +250,50 @@ const AdminProductsPage: React.FC = () => {
                 showStatus={showStatus}
             />
 
-            <ConfirmDeleteModal
-                show={showDeleteModal}
-                handleClose={() => setShowDeleteModal(false)}
-                handleDelete={handleDelete}
-                itemName={itemToDelete?.name || 'este producto'}
+            {/* 🚨 NUEVO: Modal de confirmación para activar/desactivar */}
+            <ConfirmToggleActiveModal
+                show={showToggleActiveModal}
+                handleClose={() => setShowToggleActiveModal(false)}
+                handleConfirm={executeToggleActive}
+                itemName={itemToToggle?.name || 'este producto'}
+                isActivating={!itemToToggle?.isActive}
             />
+
+            {/* 🚨 ELIMINADO: El modal de confirmación de borrado ya no es necesario */}
         </AdminLayout>
     );
 };
 
 export default AdminProductsPage;
 
-
 // ----------------------------------------------------
-// COMPONENTES MODAL AUXILIARES
+// 🚨 NUEVO: MODAL DE CONFIRMACIÓN PARA ACTIVAR/DESACTIVAR
 // ----------------------------------------------------
 
-interface ConfirmDeleteModalProps { 
-    show: boolean; 
-    handleClose: () => void; 
-    handleDelete: () => void; 
-    itemName: string; 
+interface ConfirmToggleActiveModalProps {
+    show: boolean;
+    handleClose: () => void;
+    handleConfirm: () => void;
+    itemName: string;
+    isActivating: boolean;
 }
 
-const ConfirmDeleteModal: React.FC<ConfirmDeleteModalProps> = ({ show, handleClose, handleDelete, itemName }) => (
+const ConfirmToggleActiveModal: React.FC<ConfirmToggleActiveModalProps> = ({ show, handleClose, handleConfirm, itemName, isActivating }) => (
     <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton style={{ backgroundColor: '#111', borderBottomColor: '#FF4444' }}>
-            <Modal.Title style={{ color: '#FF4444' }}>
-                <AlertTriangle size={24} className="me-2"/> Confirmar Eliminación
+        <Modal.Header closeButton style={{ backgroundColor: '#111', borderBottomColor: isActivating ? '#39FF14' : '#FFC107' }}>
+            <Modal.Title style={{ color: isActivating ? '#39FF14' : '#FFC107' }}>
+                <AlertTriangle size={24} className="me-2" /> Confirmar {isActivating ? 'Activación' : 'Desactivación'}
             </Modal.Title>
         </Modal.Header>
 
         <Modal.Body style={{ backgroundColor: '#222', color: 'white' }}>
-            <p>¿Estás seguro de que deseas eliminar <strong style={{ color: '#39FF14' }}>{itemName}</strong>?</p>
-            <Alert variant="warning" className="mt-3">Esta acción no se puede deshacer.</Alert>
+            <p>¿Estás seguro de que deseas <strong>{isActivating ? 'ACTIVAR' : 'DESACTIVAR'}</strong> el producto <strong style={{ color: '#39FF14' }}>{itemName}</strong>?</p>
+            <Alert variant={isActivating ? 'success' : 'warning'} className="mt-3">{isActivating ? 'El producto volverá a ser visible en la tienda.' : 'El producto se ocultará de la tienda pública.'}</Alert>
         </Modal.Body>
 
         <Modal.Footer style={{ backgroundColor: '#111' }}>
             <Button variant="secondary" onClick={handleClose}>Cancelar</Button>
-            <Button variant="danger" onClick={handleDelete}>Eliminar</Button>
+            <Button variant={isActivating ? 'success' : 'warning'} onClick={handleConfirm}>Sí, {isActivating ? 'Activar' : 'Desactivar'}</Button>
         </Modal.Footer>
     </Modal>
 );
@@ -232,8 +314,8 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
     
     const isEditing = !!currentProduct;
 
-    // ✅ AQUI está la corrección de TIPADO:
-    const [formData, setFormData] = useState<Partial<Product>>({});
+    // 🚨 CORRECCIÓN: Inicializamos el estado con valores por defecto para evitar el bug de 'isActive' undefined.
+    const [formData, setFormData] = useState<Partial<Product>>({ isActive: true });
 
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -242,7 +324,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
     useEffect(() => {
         if (currentProduct) {
             setFormData(currentProduct);
-            setPreviewUrl(currentProduct.imageUrl);
+            setPreviewUrl(currentProduct.imageUrl || null);
         } else {
             setFormData({
                 name: '',
@@ -255,6 +337,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
                 isTopSelling: false,
                 rating: 0,
                 numReviews: 0,
+                isActive: true, // Por defecto, los nuevos productos están activos
             });
             setPreviewUrl(null);
         }
@@ -263,17 +346,19 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
 
     const updateFormData = (e: React.ChangeEvent<any>) => {
         const { name, value, type } = e.target;
-
+        
+        // 🚨 CORRECCIÓN: Manejo de checkboxes y switches
+        if (type === 'checkbox' || type === 'switch') {
+            setFormData(prev => ({ ...prev, [name]: e.target.checked }));
+            return;
+        }
+        
         if (name === 'price' || name === 'countInStock') {
             const intValue = parseInt(value);
-
-            if (value === '' || !isNaN(intValue)) {
-                if (name === 'countInStock' && intValue > MAX_STOCK) return;
-                if (name === 'price' && intValue > MAX_PRICE_CLP) return;
-
-                setFormData(prev => ({ ...prev, [name]: intValue }));
-            }
-            return;
+            if (name === 'countInStock' && intValue > MAX_STOCK) return;
+            if (name === 'price' && intValue > MAX_PRICE_CLP) return;
+            setFormData(prev => ({ ...prev, [name]: isNaN(intValue) ? 0 : intValue }));
+            return; 
         }
 
         setFormData(prev => ({
@@ -328,6 +413,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
         }
 
         const payload = { ...formData };
+        // 🚨 CORRECCIÓN: Usamos los endpoints POST / y PUT /:id que ya existen.
         const url = isEditing ? `${API_URL}/${currentProduct!.id}` : API_URL;
         const method = isEditing ? 'PUT' : 'POST';
 
@@ -400,6 +486,15 @@ const ProductModal: React.FC<ProductModalProps> = ({ show, handleClose, currentP
                                 <Form.Control type="number" name="price" value={formData.price ?? 0} onChange={updateFormData} min="1" max={MAX_PRICE_CLP} style={{ backgroundColor: '#333', color: 'white' }} />
                             </Form.Group>
                         </Col>
+
+                        <Col md={6}>
+                            <Form.Group className="mb-3">
+                                <Form.Label>Estado del Producto</Form.Label>
+                                <Form.Check type="switch" id="product-active-switch" label="Producto Activo" name="isActive" checked={formData.isActive ?? true} onChange={updateFormData} />
+                                <Form.Text className="text-muted">Si está desactivado, no será visible para los clientes.</Form.Text>
+                            </Form.Group>
+                        </Col>
+
 
                         <Col md={6}>
                             <Form.Group className="mb-3">
