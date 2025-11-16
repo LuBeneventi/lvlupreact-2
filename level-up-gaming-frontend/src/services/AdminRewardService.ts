@@ -32,7 +32,7 @@ export const AdminRewardService = {
      */
     async createReward(payload: RewardFormData): Promise<Reward> {
         try {
-            const { data } = await axios.post(API_ENDPOINTS.REWARDS, payload);
+            const { data } = await axios.post(`${API_ENDPOINTS.REWARDS}/admin`, payload);
             return data;
         } catch (error: any) {
             throw error;
@@ -44,7 +44,7 @@ export const AdminRewardService = {
      */
     async updateReward(rewardId: string, payload: RewardFormData): Promise<Reward> {
         try {
-            const { data } = await axios.put(`${API_ENDPOINTS.REWARDS}/${rewardId}`, payload);
+            const { data } = await axios.put(`${API_ENDPOINTS.REWARDS}/${rewardId}/admin`, payload);
             return data;
         } catch (error: any) {
             throw error;
@@ -56,7 +56,7 @@ export const AdminRewardService = {
      */
     async toggleRewardActive(rewardId: string, isActive: boolean): Promise<Reward> {
         try {
-            const { data } = await axios.put(`${API_ENDPOINTS.REWARDS}/${rewardId}`, { isActive });
+            const { data } = await axios.put(`${API_ENDPOINTS.REWARDS}/${rewardId}/admin`, { isActive });
             return data;
         } catch (error) {
             throw new Error('Fallo al cambiar el estado de la recompensa.');
@@ -68,7 +68,7 @@ export const AdminRewardService = {
      */
     async deleteReward(rewardId: string): Promise<void> {
         try {
-            await axios.delete(`${API_ENDPOINTS.REWARDS}/${rewardId}`);
+            await axios.delete(`${API_ENDPOINTS.REWARDS}/${rewardId}/admin`);
         } catch (error) {
             throw new Error('Fallo al eliminar la recompensa.');
         }

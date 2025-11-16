@@ -30,8 +30,8 @@
     "@swc/register": "^0.1.10",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.19.24",
     "@types/jsonwebtoken": "^9.0.2",
+    "@types/node": "^20.19.24",
     "@types/uuid": "^9.0.8",
     "cross-env": "^7.0.3",
     "typescript": "^5.4.5"

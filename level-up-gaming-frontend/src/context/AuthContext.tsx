@@ -1,7 +1,13 @@
 // src/context/AuthContext.tsx
 
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import axios from 'axios'; // Import the default axios instance
+import { API_BASE_URL } from '../services/api.config'; // Import API_BASE_URL
+
+// Create a pre-configured axios instance
+export const apiClient = axios.create({
+    baseURL: API_BASE_URL, // Use the base URL from api.config.ts
+});
 
 // 1. Definición de Tipos de Dirección y Usuario
 interface Address { 
@@ -56,20 +62,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Persistir el usuario en localStorage cada vez que cambie
     useEffect(() => {
         if (user) {
+            // Set header for the apiClient instance
+            apiClient.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
             localStorage.setItem('user', JSON.stringify(user));
-            // Configurar header por defecto para axios (con defensas para mocks en tests)
-            const a: any = axios;
-            a.defaults = a.defaults || {};
-            a.defaults.headers = a.defaults.headers || {};
-            a.defaults.headers.common = a.defaults.headers.common || {};
-            a.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
         } else {
+            // Remove header from apiClient instance
+            delete apiClient.defaults.headers.common['Authorization'];
             localStorage.removeItem('user');
-            // Eliminar header de autorización al hacer logout
-            const a: any = axios;
-            if (a.defaults && a.defaults.headers && a.defaults.headers.common) {
-                delete a.defaults.headers.common['Authorization'];
-            }
         }
     }, [user]);
 
@@ -77,16 +76,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const login = async (loginIdentifier: string, password: string): Promise<boolean> => {
         try {
             // Usa el identificador para login (email o nombre)
-            const res = await axios.post('/api/users/login', { loginIdentifier, password });
+            const res = await apiClient.post('/users/login', { loginIdentifier, password }); // Use apiClient
             const userData: User = res.data;
             
             setUser(userData);
-            // Aplicar header de autorización inmediatamente (defensas para mocks)
-            const a: any = axios;
-            a.defaults = a.defaults || {};
-            a.defaults.headers = a.defaults.headers || {};
-            a.defaults.headers.common = a.defaults.headers.common || {};
-            a.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+            apiClient.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`; // Set for apiClient
             return true;
         } catch (error) {
             setUser(null);
@@ -97,11 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // 🚨 FUNCIÓN PARA GUARDAR EL ESTADO DIRECTAMENTE (Usada en Registro y Edición de Perfil)
     const setUserFromRegistration = (userData: User) => {
         setUser(userData);
-        const a: any = axios;
-        a.defaults = a.defaults || {};
-        a.defaults.headers = a.defaults.headers || {};
-        a.defaults.headers.common = a.defaults.headers.common || {};
-        a.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+        apiClient.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`; // Set for apiClient
     };
 
     // Función de Logout
@@ -111,14 +101,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const register = async (name: string, email: string, password: string): Promise<boolean> => {
         try {
-            const res = await axios.post('/api/users/register', { name, email, password });
+            const res = await apiClient.post('/users/register', { name, email, password }); // Use apiClient
             const userData: User = res.data;
             setUser(userData);
-            const a: any = axios;
-            a.defaults = a.defaults || {};
-            a.defaults.headers = a.defaults.headers || {};
-            a.defaults.headers.common = a.defaults.headers.common || {};
-            a.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
+            apiClient.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`; // Set for apiClient
             return true;
         } catch (error) {
             return false;
@@ -127,18 +113,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     const updateProfile = async (userData: Partial<User>): Promise<boolean> => {
         try {
-            const res = await axios.put('/api/users/profile', userData, {
-                headers: {
-                    Authorization: `Bearer ${user?.token}`,
-                },
-            });
+            // For updateProfile, it's better to pass the token directly in the request config
+            // as the user.token might be stale if the update itself generates a new token.
+            // However, if the backend doesn't return a new token, using the default is fine.
+            // Let's stick to the default for consistency with the current pattern.
+            const res = await apiClient.put('/users/profile', userData); // Use apiClient
             const updatedUserData: User = res.data;
             setUser(updatedUserData);
-            const a: any = axios;
-            a.defaults = a.defaults || {};
-            a.defaults.headers = a.defaults.headers || {};
-            a.defaults.headers.common = a.defaults.headers.common || {};
-            a.defaults.headers.common['Authorization'] = `Bearer ${updatedUserData.token}`;
+            apiClient.defaults.headers.common['Authorization'] = `Bearer ${updatedUserData.token}`; // Set for apiClient
             return true;
         } catch (error) {
             return false;

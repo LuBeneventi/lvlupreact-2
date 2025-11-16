@@ -54,7 +54,7 @@ const authUser = async (req: Request, res: Response) => {
 // ----------------------------------------------------
 // LÓGICA DE REGISTRO DE CLIENTE
 // ----------------------------------------------------
-const registerUser = (req: Request, res: Response) => {
+const registerUser = async (req: Request, res: Response) => {
     const { name, email, password, rut, age, address, referredBy } = req.body;
     const users = readFromDb<User>('users');
 
@@ -180,7 +180,7 @@ const createUser = async (req: Request, res: Response) => {
     res.status(201).json(safeUser);
 };
 
-const updateUserByAdmin = (req: Request, res: Response) => {
+const updateUserByAdmin = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, email, role, rut, age, address, newPassword } = req.body;
     const users = readFromDb<User>('users');

@@ -53,7 +53,8 @@ const createProduct = (req: Request, res: Response) => {
         specifications: specifications || '', // 🚨 Guardar el nuevo campo
         category: category || 'Accesorios', // 🚨 Guardar el nuevo campo
         imageUrl: imageUrl || 'https://via.placeholder.com/300x200/000000/FFFFFF?text=FOTO+DEL+PRODUCTO',
-        reviews: []
+        reviews: [],
+        isActive: false
     };
 
     products.push(newProduct); 
